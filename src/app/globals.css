@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #130d0a;
+  --color-surface: #1d1510;
+  --color-surface-light: #271c15;
+  --color-line: rgba(244, 234, 214, 0.12);
+  --color-cream: #f4ead6;
+  --color-cream-dim: #d9cbae;
+  --color-red: #b3272c;
+  --color-red-light: #d84545;
+  --color-navy: #24466b;
+  --color-navy-light: #3c5f88;
+
+  --font-display: var(--font-anton);
+  --font-script: var(--font-script);
+  --font-body: var(--font-body);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+}
+
+::selection {
+  background: var(--color-red);
+  color: var(--color-cream);
+}
+
+/* Leather-grain texture, fixed over the whole viewport */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* The signature motif: an endlessly spinning barber-pole stripe, built from
+   a diagonal repeating gradient whose position we animate rather than any
+   image/gif — scales cleanly and tints exactly to the palette. */
+@keyframes pole-spin {
+  from { background-position: 0 0; }
+  to { background-position: 0 96px; }
+}
+
+.pole-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-red) 0px,
+    var(--color-red) 16px,
+    var(--color-cream) 16px,
+    var(--color-cream) 32px,
+    var(--color-navy) 32px,
+    var(--color-navy) 48px,
+    var(--color-cream) 48px,
+    var(--color-cream) 64px
+  );
+  background-size: 100% 96px;
+  animation: pole-spin 1.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pole-stripes { animation: none; }
+}
+
+.shine-btn {
+  position: relative;
+  overflow: hidden;
+}
+.shine-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.75s ease;
+}
+.shine-btn:hover::after {
+  left: 140%;
+}
+
+.text-glow {
+  text-shadow: 0 0 40px rgba(179, 39, 44, 0.45);
+}
+
+.badge-ring {
+  position: relative;
+}
+.badge-ring::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 9999px;
+  padding: 1.5px;
+  background: conic-gradient(from 0deg, var(--color-red), var(--color-cream), var(--color-navy), var(--color-cream), var(--color-red));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
