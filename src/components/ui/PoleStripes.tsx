@@ -11,23 +11,44 @@ import { cn } from "@/lib/utils";
  * this because rotation is one affine transform on the whole infinite
  * tiling grid, not a per-pixel gradient-angle calculation — so it tiles
  * exactly regardless of angle.
+ *
+ * `size` is the pixel period of one full red/cream/navy/cream cycle —
+ * it's independent of the element's rendered size, so a thin bar needs
+ * a small size (e.g. 16) or the stripes read as one huge diagonal streak
+ * instead of a fine repeating pattern. Default 64 suits the thick pole.
+ *
+ * `fill`: an absolutely-positioned SVG (the pole, via inset-0) needs an
+ * explicit h-full/w-full or its replaced-element sizing leaves it
+ * partly empty — but that same class fights any height/width passed
+ * through `className` for a normally-flowed element (the divider bar).
+ * So it's an opt-in default (on) rather than always-on, letting the
+ * divider turn it off and size itself via className instead.
  */
-export function PoleStripes({ className }: { className?: string }) {
+export function PoleStripes({
+  className,
+  size = 64,
+  fill = true,
+}: {
+  className?: string;
+  size?: number;
+  fill?: boolean;
+}) {
   const reactId = useId();
   const id = `pole-stripes-${reactId.replace(/:/g, "")}`;
+  const band = size / 4;
   return (
-    <svg className={cn("block h-full w-full", className)} preserveAspectRatio="none" aria-hidden>
+    <svg className={cn("block", fill && "h-full w-full", className)} preserveAspectRatio="none" aria-hidden>
       <defs>
-        <pattern id={id} patternUnits="userSpaceOnUse" width="64" height="64" patternTransform="rotate(45)">
-          <rect width="64" height="16" fill="var(--color-red)" />
-          <rect y="16" width="64" height="16" fill="var(--color-cream)" />
-          <rect y="32" width="64" height="16" fill="var(--color-navy)" />
-          <rect y="48" width="64" height="16" fill="var(--color-cream)" />
+        <pattern id={id} patternUnits="userSpaceOnUse" width={size} height={size} patternTransform="rotate(45)">
+          <rect width={size} height={band} fill="var(--color-red)" />
+          <rect y={band} width={size} height={band} fill="var(--color-cream)" />
+          <rect y={band * 2} width={size} height={band} fill="var(--color-navy)" />
+          <rect y={band * 3} width={size} height={band} fill="var(--color-cream)" />
           <animateTransform
             attributeName="patternTransform"
             type="translate"
             from="0 0"
-            to="0 64"
+            to={`0 ${size}`}
             dur="1.8s"
             repeatCount="indefinite"
             additive="sum"

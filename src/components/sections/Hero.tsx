@@ -60,7 +60,7 @@ export function Hero() {
         </Reveal>
       </Container>
 
-      <PoleStripes className="mt-16 h-3 w-full opacity-90" />
+      <PoleStripes className="mt-16 h-3 w-full opacity-90" size={16} fill={false} />
     </section>
   );
 }
