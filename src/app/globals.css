@@ -42,9 +42,15 @@ body {
 /* The signature motif: an endlessly spinning barber-pole stripe, built from
    a diagonal repeating gradient whose position we animate rather than any
    image/gif — scales cleanly and tints exactly to the palette. */
+/* repeating-linear-gradient is already an infinite, self-tiling pattern —
+   a fixed-px background-size square (matching the 4-band 64px period)
+   keeps every tile identical so it loops with no seam. Forcing the width
+   to a %-based size here is what caused the jagged/overlapping look,
+   since it stretched each tile to match whatever the pole's own width
+   was instead of the gradient's real diagonal repeat distance. */
 @keyframes pole-spin {
   from { background-position: 0 0; }
-  to { background-position: 0 96px; }
+  to { background-position: 0 64px; }
 }
 
 .pole-stripes {
@@ -59,7 +65,7 @@ body {
     var(--color-cream) 48px,
     var(--color-cream) 64px
   );
-  background-size: 100% 96px;
+  background-size: 64px 64px;
   animation: pole-spin 1.8s linear infinite;
 }
 
