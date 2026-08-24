@@ -3,6 +3,7 @@
 import { ArrowUpRight, Phone, Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { BarberPole } from "@/components/ui/BarberPole";
+import { PoleStripes } from "@/components/ui/PoleStripes";
 import { Reveal } from "@/components/ui/Reveal";
 import { studio } from "@/data/business";
 
@@ -59,7 +60,7 @@ export function Hero() {
         </Reveal>
       </Container>
 
-      <div className="pole-stripes mt-16 h-3 w-full opacity-90" aria-hidden />
+      <PoleStripes className="mt-16 h-3 w-full opacity-90" />
     </section>
   );
 }

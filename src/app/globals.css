@@ -39,39 +39,10 @@ body {
   background-repeat: repeat;
 }
 
-/* The signature motif: an endlessly spinning barber-pole stripe, built from
-   a diagonal repeating gradient whose position we animate rather than any
-   image/gif — scales cleanly and tints exactly to the palette. */
-/* repeating-linear-gradient is already an infinite, self-tiling pattern —
-   a fixed-px background-size square (matching the 4-band 64px period)
-   keeps every tile identical so it loops with no seam. Forcing the width
-   to a %-based size here is what caused the jagged/overlapping look,
-   since it stretched each tile to match whatever the pole's own width
-   was instead of the gradient's real diagonal repeat distance. */
-@keyframes pole-spin {
-  from { background-position: 0 0; }
-  to { background-position: 0 64px; }
-}
-
-.pole-stripes {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    var(--color-red) 0px,
-    var(--color-red) 16px,
-    var(--color-cream) 16px,
-    var(--color-cream) 32px,
-    var(--color-navy) 32px,
-    var(--color-navy) 48px,
-    var(--color-cream) 48px,
-    var(--color-cream) 64px
-  );
-  background-size: 64px 64px;
-  animation: pole-spin 1.8s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pole-stripes { animation: none; }
-}
+/* The barber-pole stripe itself now lives in PoleStripes.tsx as an SVG
+   pattern — see that file for why the CSS-gradient version here was
+   replaced (a 45deg repeating-linear-gradient can't tile seamlessly in
+   any renderer; the geometry doesn't divide evenly into pixels). */
 
 .shine-btn {
   position: relative;
