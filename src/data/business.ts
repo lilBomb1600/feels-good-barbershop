@@ -8,6 +8,7 @@ export const studio = {
   phoneHref: "tel:+19253238419",
   instagram: "https://www.instagram.com/feelgoods_pittsburg",
   instagramHandle: "@feelgoods_pittsburg",
+  facebook: "https://www.facebook.com/feelgoods.pittsburg/",
   bookingUrl: "https://booksy.com/en-us/627951_feel-goods-barbershop_barber-shop_103685_pittsburg",
   established: 2021,
   barber: "Johnny Blendz",

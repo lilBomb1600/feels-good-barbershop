@@ -1,4 +1,6 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
+import { FacebookIcon } from "@/components/ui/FacebookIcon";
 import { Container } from "@/components/ui/Container";
 import { BarberPole } from "@/components/ui/BarberPole";
 import { studio } from "@/data/business";
@@ -24,8 +26,12 @@ export function Footer() {
             {studio.address}
           </a>
           <a href={studio.instagram} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-cream">
-            <Mail className="h-4 w-4 text-red-light" />
+            <InstagramIcon className="h-4 w-4 text-red-light" />
             {studio.instagramHandle}
+          </a>
+          <a href={studio.facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-cream">
+            <FacebookIcon className="h-4 w-4 text-red-light" />
+            Facebook
           </a>
         </div>
       </Container>

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone } from "lucide-react";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
+import { FacebookIcon } from "@/components/ui/FacebookIcon";
 import { Container } from "@/components/ui/Container";
 import { BarberPole } from "@/components/ui/BarberPole";
 import { cn } from "@/lib/utils";
@@ -80,6 +82,12 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-4 md:flex">
+          <a href={studio.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="text-cream-dim hover:text-red-light">
+            <InstagramIcon className="h-[18px] w-[18px]" />
+          </a>
+          <a href={studio.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="text-cream-dim hover:text-red-light">
+            <FacebookIcon className="h-[18px] w-[18px]" />
+          </a>
           <a href={studio.phoneHref} className="flex items-center gap-2 text-sm font-medium text-cream-dim hover:text-cream">
             <Phone className="h-4 w-4 text-red-light" />
             {studio.phone}
@@ -131,6 +139,14 @@ export function Navbar() {
               >
                 Book Now
               </a>
+              <div className="mt-4 flex items-center gap-5 px-3">
+                <a href={studio.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="text-cream-dim hover:text-red-light">
+                  <InstagramIcon className="h-5 w-5" />
+                </a>
+                <a href={studio.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="text-cream-dim hover:text-red-light">
+                  <FacebookIcon className="h-5 w-5" />
+                </a>
+              </div>
             </Container>
           </motion.div>
         )}
