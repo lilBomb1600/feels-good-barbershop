@@ -1,0 +1,295 @@
+{
+ "fade-mural": {
+  "src": "fg-084.jpg",
+  "dir": "photos",
+  "w": 980,
+  "h": 1307,
+  "widths": [
+   640,
+   980
+  ]
+ },
+ "taper-hand": {
+  "src": "fg-059.jpg",
+  "dir": "photos",
+  "w": 2420,
+  "h": 3226,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "taper-back": {
+  "src": "fg-088.jpg",
+  "dir": "photos",
+  "w": 2238,
+  "h": 2984,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "fade-pole": {
+  "src": "fg-067.jpg",
+  "dir": "photos",
+  "w": 3256,
+  "h": 4341,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "star-kid": {
+  "src": "fg-108.jpg",
+  "dir": "photos",
+  "w": 2437,
+  "h": 3251,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "star-zigzag": {
+  "src": "fg-028.jpg",
+  "dir": "photos",
+  "w": 1080,
+  "h": 1440,
+  "widths": [
+   640,
+   1080
+  ]
+ },
+ "key-back": {
+  "src": "fg-078.jpg",
+  "dir": "photos",
+  "w": 2298,
+  "h": 3064,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "key-side": {
+  "src": "fg-009.jpg",
+  "dir": "photos",
+  "w": 2299,
+  "h": 3064,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "lines-back": {
+  "src": "fg-117.jpg",
+  "dir": "photos",
+  "w": 1837,
+  "h": 2450,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "lines-side": {
+  "src": "fg-032.jpg",
+  "dir": "photos",
+  "w": 1979,
+  "h": 2641,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "lines-slick": {
+  "src": "fg-103.jpg",
+  "dir": "photos",
+  "w": 2268,
+  "h": 3024,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "kid-side": {
+  "src": "fg-038.jpg",
+  "dir": "photos",
+  "w": 2419,
+  "h": 3226,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "kid-back": {
+  "src": "fg-086.jpg",
+  "dir": "photos",
+  "w": 1284,
+  "h": 1711,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "curls-bun": {
+  "src": "fg-043.jpg",
+  "dir": "photos",
+  "w": 2420,
+  "h": 3226,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "curls-bun-side": {
+  "src": "fg-042.jpg",
+  "dir": "photos",
+  "w": 2419,
+  "h": 3225,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "curls-back": {
+  "src": "fg-055.jpg",
+  "dir": "photos",
+  "w": 2662,
+  "h": 3548,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "curls-side": {
+  "src": "fg-050.jpg",
+  "dir": "photos",
+  "w": 1124,
+  "h": 1499,
+  "widths": [
+   640,
+   1124
+  ]
+ },
+ "afro-taper": {
+  "src": "fg-056.jpg",
+  "dir": "photos",
+  "w": 2420,
+  "h": 3225,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "curls-blue": {
+  "src": "fg-072.jpg",
+  "dir": "photos",
+  "w": 1284,
+  "h": 1712,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "beard-after": {
+  "src": "fg-114.jpg",
+  "dir": "photos",
+  "w": 729,
+  "h": 972,
+  "widths": [
+   640,
+   729
+  ]
+ },
+ "beard-bun": {
+  "src": "fg-017.jpg",
+  "dir": "photos",
+  "w": 2299,
+  "h": 3064,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "beard-fade": {
+  "src": "fg-000.jpg",
+  "dir": "photos",
+  "w": 1010,
+  "h": 1346,
+  "widths": [
+   640,
+   1010
+  ]
+ },
+ "price-adults": {
+  "src": "fg-024.jpg",
+  "dir": "photos",
+  "w": 2359,
+  "h": 3145,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "price-seniors": {
+  "src": "fg-007.jpg",
+  "dir": "photos",
+  "w": 2782,
+  "h": 3709,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "price-kids": {
+  "src": "fg-073.jpg",
+  "dir": "photos",
+  "w": 2359,
+  "h": 3145,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "price-towel": {
+  "src": "fg-031.jpg",
+  "dir": "photos",
+  "w": 2268,
+  "h": 3024,
+  "widths": [
+   640,
+   1280
+  ]
+ },
+ "barber": {
+  "src": "fg-025.jpg",
+  "dir": "photos",
+  "w": 567,
+  "h": 780,
+  "widths": [
+   567
+  ]
+ },
+ "cape": {
+  "src": "fg-085.jpg",
+  "dir": "textures",
+  "w": 2117,
+  "h": 1734,
+  "widths": [
+   640,
+   1280,
+   1920,
+   2117
+  ]
+ },
+ "shop": {
+  "src": "fg-016.jpg",
+  "dir": "textures",
+  "w": 3024,
+  "h": 2016,
+  "widths": [
+   640,
+   1280,
+   1920,
+   2560
+  ]
+ }
+}
