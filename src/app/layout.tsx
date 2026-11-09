@@ -1,27 +1,58 @@
-import type { Metadata } from "next";
-import { Anton, Caveat, Work_Sans } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, Big_Shoulders, Mr_Dafoe } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
+import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
-import { studio } from "@/data/business";
+import { CapeLoader } from "@/components/loader/CapeLoader";
+import { PreviewMark } from "@/components/ui/PreviewMark";
+import { LangProvider } from "@/lib/i18n";
 
-const anton = Anton({ subsets: ["latin"], weight: "400", variable: "--font-anton" });
-const caveat = Caveat({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-script" });
-const workSans = Work_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body" });
+const big = Big_Shoulders({ subsets: ["latin"], axes: ["opsz"], variable: "--font-big", display: "swap" });
+const dafoe = Mr_Dafoe({ subsets: ["latin"], weight: "400", variable: "--font-dafoe", display: "swap" });
+const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", display: "swap" });
 
 export const metadata: Metadata = {
-  title: `${studio.name} | Pittsburg, CA`,
-  description: studio.description,
+  title: "Feel Goods Barbershop | Pittsburg, CA",
+  description:
+    "Family barbershop in Pittsburg, CA since 2021. Fades, tapers, shaved designs and hot towel shaves with Johnny. 4.6 stars from 125 reviews on Booksy.",
 };
+
+export const viewport: Viewport = {
+  themeColor: "#0f0b0a",
+};
+
+// Runs before first paint: picks the saved language and decides whether the cape loader plays.
+const boot = `(function(){try{var d=document.documentElement;if(localStorage.getItem('fg-lang')==='es'){d.dataset.lang='es';d.lang='es';}
+if(sessionStorage.getItem('fg-cape')==='1'||matchMedia('(prefers-reduced-motion: reduce)').matches){d.dataset.cape='off';}}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${anton.variable} ${caveat.variable} ${workSans.variable} h-full antialiased`}>
-      <body className="relative flex min-h-full flex-col bg-ink text-cream">
-        <div className="grain-overlay pointer-events-none fixed inset-0 z-40 opacity-[0.05]" />
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+    <html
+      lang="en"
+      data-lang="en"
+      suppressHydrationWarning
+      className={`${big.variable} ${dafoe.variable} ${archivo.variable} antialiased`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: boot }} />
+        <noscript>
+          <style>{`.cape-loader{display:none!important}`}</style>
+        </noscript>
+        <link
+          rel="preload"
+          as="image"
+          href="/images/textures/cape-1280.webp"
+          imageSrcSet="/images/textures/cape-1280.webp 1x, /images/textures/cape-1920.webp 2x"
+        />
+      </head>
+      <body className="min-h-svh">
+        <LangProvider>
+          <CapeLoader />
+          <Nav />
+          <main className="overflow-x-clip">{children}</main>
+          <Footer />
+        </LangProvider>
+        <PreviewMark />
       </body>
     </html>
   );

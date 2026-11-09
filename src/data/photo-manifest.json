@@ -99,16 +99,6 @@
    1280
   ]
  },
- "lines-slick": {
-  "src": "fg-103.jpg",
-  "dir": "photos",
-  "w": 2268,
-  "h": 3024,
-  "widths": [
-   640,
-   1280
-  ]
- },
  "kid-side": {
   "src": "fg-038.jpg",
   "dir": "photos",
@@ -174,16 +164,6 @@
   "dir": "photos",
   "w": 2420,
   "h": 3225,
-  "widths": [
-   640,
-   1280
-  ]
- },
- "curls-blue": {
-  "src": "fg-072.jpg",
-  "dir": "photos",
-  "w": 1284,
-  "h": 1712,
   "widths": [
    640,
    1280

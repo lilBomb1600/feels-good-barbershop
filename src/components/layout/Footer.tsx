@@ -1,43 +1,74 @@
-import { MapPin, Phone } from "lucide-react";
-import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import { FacebookIcon } from "@/components/ui/FacebookIcon";
-import { Container } from "@/components/ui/Container";
-import { BarberPole } from "@/components/ui/BarberPole";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
+import { StarMark } from "@/components/ui/StarMark";
 import { studio } from "@/data/business";
+import { T } from "@/lib/i18n";
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-line bg-surface">
-      <Container className="flex flex-col items-start justify-between gap-8 py-14 sm:flex-row sm:items-center">
-        <div className="flex items-start gap-4">
-          <BarberPole className="h-14 w-4" />
-          <div>
-            <p className="font-display text-xl uppercase tracking-wide text-cream">{studio.name}</p>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-cream-dim">{studio.tagline}</p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3 text-sm text-cream-dim">
-          <a href={studio.phoneHref} className="flex items-center gap-2 hover:text-cream">
-            <Phone className="h-4 w-4 text-red-light" />
-            {studio.phone}
+    <footer className="relative z-10 border-t border-paper/10 bg-ink pb-24 text-paper sm:pb-20">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-10 px-5 pt-14 sm:px-8 lg:flex-row lg:items-start lg:justify-between lg:px-12">
+        <div className="flex flex-col gap-4">
+          <a href="#top" className="flex items-center gap-3" aria-label="Feel Goods Barbershop, back to top">
+            <StarMark className="h-8 w-auto text-rose-lit" />
+            <span className="flex items-baseline gap-2">
+              <span className="font-display text-3xl leading-none font-black uppercase">Feel</span>
+              <span className="script-stroke font-script text-3xl leading-none text-rose-lit">Goods</span>
+            </span>
           </a>
-          <a href={studio.mapsUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-cream">
-            <MapPin className="h-4 w-4 text-red-light" />
+          <p className="max-w-[34ch] text-mute">
             {studio.address}
+            <br />
+            <a href={studio.phoneHref} className="tabular hover:text-paper">
+              {studio.phone}
+            </a>
+          </p>
+        </div>
+
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-3 text-sm">
+          <a href="#prices" className="text-mute hover:text-paper">
+            <T en="Prices" es="Precios" />
           </a>
-          <a href={studio.instagram} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-cream">
-            <InstagramIcon className="h-4 w-4 text-red-light" />
-            {studio.instagramHandle}
+          <a href={studio.bookingUrl} target="_blank" rel="noopener noreferrer" className="text-mute hover:text-paper">
+            <T en="Book on Booksy" es="Reserva en Booksy" />
           </a>
-          <a href={studio.facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-cream">
-            <FacebookIcon className="h-4 w-4 text-red-light" />
+          <a href="#cuts" className="text-mute hover:text-paper">
+            <T en="Cuts" es="Cortes" />
+          </a>
+          <a
+            href={studio.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-mute hover:text-paper"
+          >
+            <InstagramIcon className="size-4" />
+            Instagram
+          </a>
+          <a href="#reviews" className="text-mute hover:text-paper">
+            <T en="Reviews" es="Reseñas" />
+          </a>
+          <a
+            href={studio.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-mute hover:text-paper"
+          >
+            <FacebookIcon className="size-4" />
             Facebook
           </a>
-        </div>
-      </Container>
-      <Container className="border-t border-line py-6">
-        <p className="text-xs text-cream-dim/70">© {new Date().getFullYear()} {studio.name}. All rights reserved.</p>
-      </Container>
+          <a href="#visit" className="text-mute hover:text-paper">
+            <T en="Visit" es="Visítanos" />
+          </a>
+        </nav>
+      </div>
+      <div className="mx-auto mt-12 max-w-[1440px] px-5 sm:px-8 lg:px-12">
+        <p className="border-t border-paper/10 pt-6 text-xs leading-relaxed text-mute">
+          <T
+            en="Concept site by Arman Digital. Prices, hours and reviews come from the shop's Booksy page; photos are the shop's own."
+            es="Sitio de muestra hecho por Arman Digital. Los precios, el horario y las reseñas vienen de la página de Booksy de la barbería; las fotos son de la barbería."
+          />
+        </p>
+      </div>
     </footer>
   );
 }
