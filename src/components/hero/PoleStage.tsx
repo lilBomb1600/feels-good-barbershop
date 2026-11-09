@@ -46,14 +46,22 @@ export function PoleStage({ className }: { className?: string }) {
 
   useEffect(() => {
     if (mode !== "live" || seen || !ref.current) return;
+    // the hero has to stay on screen for a moment: a link to #visit briefly shows the top of the
+    // page while the browser scrolls down to it, and that glimpse shouldn't cost a three.js download
+    let timer = 0;
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        setSeen(true);
-        io.disconnect();
-      }
+      window.clearTimeout(timer);
+      if (e.isIntersecting)
+        timer = window.setTimeout(() => {
+          setSeen(true);
+          io.disconnect();
+        }, 450);
     });
     io.observe(ref.current);
-    return () => io.disconnect();
+    return () => {
+      window.clearTimeout(timer);
+      io.disconnect();
+    };
   }, [mode, seen]);
 
   useEffect(() => {
