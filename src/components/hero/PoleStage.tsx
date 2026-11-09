@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useClientValue } from "@/lib/client-stores";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,8 @@ function canRun3DCached() {
  * Holds the pole. Capable devices get the live three.js scene, which renders only while the hero is
  * showing. Reduced motion, Save-Data, low-memory or low-core devices and browsers without WebGL2 get a
  * still render of the same scene (captured from it, so it lines up). The stage is absolutely positioned,
- * so either path leaves the layout untouched.
+ * so either path leaves the layout untouched. three.js isn't even downloaded until the hero is on screen
+ * (a link straight to #visit never pays for it).
  */
 export function PoleStage({ className }: { className?: string }) {
   const posterMode = useClientValue(() => new URLSearchParams(window.location.search).has("poster")) ?? false;
@@ -40,9 +41,23 @@ export function PoleStage({ className }: { className?: string }) {
   const mode = capable === null ? "pending" : capable || posterMode ? "live" : "still";
   const [ready, setReady] = useState(false);
   const [active, setActive] = useState(true);
+  const [seen, setSeen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (mode !== "live") return;
+    if (mode !== "live" || seen || !ref.current) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        setSeen(true);
+        io.disconnect();
+      }
+    });
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [mode, seen]);
+
+  useEffect(() => {
+    if (mode !== "live" || !seen) return;
     const onScroll = () => setActive(window.scrollY < window.innerHeight * 1.05 && !document.hidden);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -51,10 +66,10 @@ export function PoleStage({ className }: { className?: string }) {
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onScroll);
     };
-  }, [mode]);
+  }, [mode, seen]);
 
   return (
-    <div className={cn("absolute inset-0", className)} aria-hidden>
+    <div ref={ref} className={cn("absolute inset-0", className)} aria-hidden>
       {mode === "still" ? (
         <picture>
           <source media="(max-aspect-ratio: 4/5)" srcSet="/images/pole/pole-still-tall.webp" />
@@ -66,7 +81,7 @@ export function PoleStage({ className }: { className?: string }) {
           />
         </picture>
       ) : null}
-      {mode === "live" ? (
+      {mode === "live" && seen ? (
         <div
           className={cn(
             "absolute inset-0 transition-opacity duration-1000 ease-out",

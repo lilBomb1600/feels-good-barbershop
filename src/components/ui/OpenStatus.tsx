@@ -1,47 +1,62 @@
 "use client";
 
-import { openStatus } from "@/lib/hours";
+import { openStatus, type OpenStatus as Status } from "@/lib/hours";
 import { useMinute } from "@/lib/client-stores";
 import { cn } from "@/lib/utils";
 
-/**
- * Live "open now / next opening" line from the real hours, in Pacific time.
- * Server HTML reserves the line's space; the client fills it after hydration and keeps it current.
- */
-export function OpenStatus({ className, tone = "ink" }: { className?: string; tone?: "ink" | "paper" }) {
+/** The live status in both languages, from the real hours in Pacific time. Null until hydration. */
+function useOpenStatus(): { en: Status; es: Status } | null {
   const minute = useMinute();
-  const now = minute === null ? null : new Date(minute * 60_000);
-  const en = now ? openStatus("en", now) : null;
-  const es = now ? openStatus("es", now) : null;
-  const open = en?.open ?? false;
+  if (minute === null) return null;
+  const now = new Date(minute * 60_000);
+  return { en: openStatus("en", now), es: openStatus("es", now) };
+}
 
+/** Server HTML reserves the space with an invisible stand-in; the client fills it after hydration. */
+const STAND_IN = { word: "Closed", detail: "opens tomorrow at 11:00 AM" };
+
+function Both({ en, es }: { en: string; es: string }) {
   return (
-    <p className={cn("flex min-h-[1.5em] items-center gap-2.5 text-sm tabular", className)}>
-      <span
-        aria-hidden
-        className={cn(
-          "relative inline-flex size-2.5 shrink-0 rounded-full",
-          en ? (open ? "bg-[#3fbf6f]" : tone === "ink" ? "bg-rose-lit" : "bg-rose") : "bg-transparent",
-        )}
-      >
-        {open ? (
-          <span className="absolute inset-0 animate-ping rounded-full bg-[#3fbf6f] opacity-60 motion-reduce:hidden" />
-        ) : null}
+    <>
+      <span data-l="en" lang="en">
+        {en}
       </span>
-      {en && es ? (
-        <>
-          <span data-l="en" lang="en">
-            {en.text}
-          </span>
-          <span data-l="es" lang="es">
-            {es.text}
-          </span>
-        </>
-      ) : (
-        <span className="opacity-0" aria-hidden>
-          Open now · closes at 7:30 PM
-        </span>
-      )}
+      <span data-l="es" lang="es">
+        {es}
+      </span>
+    </>
+  );
+}
+
+/**
+ * The hero's shop-window neon: "Open" lights up in rose tube when the shop is open,
+ * and sits there unlit, glass-grey, when it's closed. The next opening is written beside it.
+ */
+export function NeonSign({ className }: { className?: string }) {
+  const s = useOpenStatus();
+  return (
+    <p className={cn("neon-sign", !s && "invisible", className)} data-lit={s ? String(s.en.open) : "false"}>
+      <span className="neon-tube">{s ? <Both en={s.en.word} es={s.es.word} /> : STAND_IN.word}</span>
+      <span className="sr-only">: </span>
+      <span className="neon-detail">{s ? <Both en={s.en.detail} es={s.es.detail} /> : STAND_IN.detail}</span>
     </p>
+  );
+}
+
+/** The card that hangs on the shop door, turned to Open or Closed. */
+export function DoorSign({ className }: { className?: string }) {
+  const s = useOpenStatus();
+  return (
+    <div className={cn("door-sign", className)} data-open={s ? String(s.en.open) : "false"}>
+      <svg aria-hidden viewBox="0 0 200 46" className="door-sign-strings" preserveAspectRatio="none">
+        <path d="M100 4 L22 44 M100 4 L178 44" stroke="currentColor" strokeWidth="1.5" fill="none" />
+        <circle cx="100" cy="4" r="3.5" fill="currentColor" />
+      </svg>
+      <p className={cn("door-sign-card", !s && "invisible")}>
+        <span className="door-sign-word">{s ? <Both en={s.en.word} es={s.es.word} /> : STAND_IN.word}</span>
+        <span className="sr-only">: </span>
+        <span className="door-sign-detail">{s ? <Both en={s.en.detail} es={s.es.detail} /> : STAND_IN.detail}</span>
+      </p>
+    </div>
   );
 }

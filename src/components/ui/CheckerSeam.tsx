@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
  * The floor between sections: a band of checker tiles that flip, tile by tile, from the ground above
  * to the ground below as the band rises through the screen. One CSS variable (--p) drives every tile.
  * The band height is fixed in CSS, so changing the column count after hydration never shifts layout.
+ *
+ * Placed inside the next section with to="transparent", the tiles fold away onto that section's own
+ * ground (grain, halftone and all), so no flat band is left behind once they've turned.
  */
 export function CheckerSeam({
   from,
@@ -85,14 +88,14 @@ export function CheckerSeam({
     <div
       ref={ref}
       aria-hidden
-      className={cn("seam h-[78px] sm:h-[120px]", className)}
+      className={cn("seam relative z-[1] h-[78px] sm:h-[120px]", className)}
       style={
         {
           "--cols": cols,
           "--from": from,
           "--to": to,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
-          background: from,
+          background: to === "transparent" ? "transparent" : from,
         } as CSSProperties
       }
     >

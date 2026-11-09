@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { PoleStage } from "@/components/hero/PoleStage";
 import { Cta, Stars } from "@/components/ui/Cta";
-import { OpenStatus } from "@/components/ui/OpenStatus";
+import { NeonSign } from "@/components/ui/OpenStatus";
 import { studio } from "@/data/business";
 import { T } from "@/lib/i18n";
 
@@ -12,6 +12,7 @@ const vh = () => (typeof window === "undefined" ? 900 : window.innerHeight);
 /**
  * The hero stays pinned while the price sheet slides up over it.
  * FEEL sits behind the 3D pole, Goods (the brush script from their flyer) crosses in front.
+ * The shop's window neon says whether they're open; the booking pill sits on the floor right under the pole.
  */
 export function Hero() {
   const { scrollY } = useScroll();
@@ -57,25 +58,48 @@ export function Hero() {
         </span>
       </motion.div>
 
-      {/* keeps the copy readable where it sits on the floor */}
+      {/*
+        The floor in front of the pole goes dark before it reaches the copy, so the cream tiles
+        (and wherever the lamp happens to be) never sit behind text.
+      */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-[46%] bg-gradient-to-t from-ink via-ink/80 to-transparent lg:h-[55%] lg:bg-transparent lg:bg-[radial-gradient(42%_62%_at_0%_100%,var(--color-ink)_30%,transparent),radial-gradient(34%_48%_at_100%_100%,var(--color-ink)_30%,transparent)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-[58%] bg-[linear-gradient(to_top,var(--color-ink)_0%,rgb(15_11_10/0.93)_30%,rgb(15_11_10/0.72)_55%,transparent)] lg:h-[max(30%,17rem)] lg:bg-[radial-gradient(42%_80%_at_0%_100%,rgb(15_11_10/0.75),transparent_75%),linear-gradient(to_top,var(--color-ink)_0%,rgb(15_11_10/0.86)_42%,rgb(15_11_10/0.45)_75%,transparent)]"
       />
       <motion.div aria-hidden style={{ opacity: shade }} className="pointer-events-none absolute inset-0 z-30 bg-ink" />
 
+      {/* the window neon, hung in front of the lettering */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="absolute inset-x-0 bottom-0 z-40 flex flex-col gap-5 motion-reduce:transform-none! px-5 pb-[4.75rem] sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:px-12 lg:pb-12"
+        className="absolute inset-x-0 top-[4.6rem] z-40 motion-reduce:transform-none! lg:top-[5.25rem]"
       >
-        <div className="max-w-[26rem]">
-          <p className="text-[0.98rem] leading-relaxed text-paper/90 text-pretty sm:text-lg">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-12">
+          <NeonSign className="-rotate-[2deg]" />
+        </div>
+      </motion.div>
+
+      <motion.div
+        style={{ y: contentY, opacity: contentOpacity }}
+        className="absolute inset-x-0 bottom-0 z-40 motion-reduce:transform-none!"
+      >
+        <div className="mx-auto flex max-w-[1440px] flex-col items-center gap-5 px-5 pb-[4.75rem] text-center sm:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-end lg:gap-8 lg:px-12 lg:pb-[4.75rem] lg:text-left">
+          <p className="max-w-[34ch] text-[0.98rem] leading-relaxed text-paper text-pretty sm:text-lg lg:max-w-[24rem] lg:text-base xl:text-[1.05rem]">
             <T
-              en="Fades, tapers, designs and hot towel shaves for the whole family in Pittsburg, CA. Walk-ins welcome."
-              es="Fades, tapers, diseños y afeitado con toalla caliente para toda la familia en Pittsburg, CA. Se atiende sin cita."
+              en={
+                <>
+                  Fades, tapers, designs and hot towel shaves for the whole family in Pittsburg, CA.{" "}
+                  <span className="whitespace-nowrap">Walk-ins welcome.</span>
+                </>
+              }
+              es={
+                <>
+                  Fades, tapers, diseños y afeitado con toalla caliente para toda la familia en Pittsburg, CA.{" "}
+                  <span className="whitespace-nowrap">Se atiende sin cita.</span>
+                </>
+              }
             />
           </p>
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
             <Cta href={studio.bookingUrl}>
               <T en="Book with Johnny" es="Reserva con Johnny" />
             </Cta>
@@ -83,10 +107,7 @@ export function Hero() {
               <T en="See prices" es="Ver precios" />
             </Cta>
           </div>
-        </div>
-        <div className="flex flex-col gap-1.5 text-paper/85 lg:items-end">
-          <OpenStatus />
-          <p className="flex items-center gap-2.5 text-sm tabular">
+          <p className="flex items-center gap-2.5 text-sm text-paper/90 tabular lg:justify-self-end lg:pb-3">
             <Stars value={studio.rating} className="text-[0.9rem] text-paper/25" />
             <span>
               {studio.rating} · <T en={`${studio.reviewCount} reviews on Booksy`} es={`${studio.reviewCount} reseñas en Booksy`} />

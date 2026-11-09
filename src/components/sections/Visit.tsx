@@ -1,12 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Accessibility, Baby, CircleParking, CreditCard, DoorOpen, Phone, Wifi } from "lucide-react";
 import { CheckerSeam } from "@/components/ui/CheckerSeam";
-import { Cta } from "@/components/ui/Cta";
+import { Cta, NewTab } from "@/components/ui/Cta";
 import { Halftone } from "@/components/ui/Halftone";
-import { OpenStatus } from "@/components/ui/OpenStatus";
+import { Heading } from "@/components/ui/Heading";
+import { DoorSign } from "@/components/ui/OpenStatus";
 import { StarMark } from "@/components/ui/StarMark";
 import { amenities, dayNames, schedule, studio } from "@/data/business";
 import { formatTime } from "@/lib/hours";
@@ -23,116 +23,184 @@ const icons = {
   wifi: Wifi,
 } as const;
 
-/** A stylized map: abstract streets (no invented landmarks), the shop's block in checker tiles, a star pin. */
-function StylizedMap() {
-  const ref = useRef<HTMLDivElement>(null);
-  const rx = useMotionValue(26);
-  const rz = useMotionValue(-9);
-  const srx = useSpring(rx, { stiffness: 120, damping: 18 });
-  const srz = useSpring(rz, { stiffness: 120, damping: 18 });
+/*
+ * The map is the shop floor: city blocks laid out as checker tiles, the streets are the grout,
+ * the shop's own tile is rose with the star on it. Abstract on purpose: no invented street names or landmarks.
+ */
+const COLS = [0, 62, 118, 196, 252, 330];
+const ROWS = [0, 70, 128, 206, 262];
+const CW = [52, 46, 68, 46, 68, 70];
+const RH = [60, 48, 68, 46, 58];
+const SHOP = { c: 3, r: 2 };
 
+function FloorMap() {
+  const ref = useRef<HTMLDivElement>(null);
+  // the same lamp as the hero: a pool of light follows the mouse across the tiles
   const onMove = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width - 0.5;
-    const ny = (e.clientY - r.top) / r.height - 0.5;
-    rx.set(26 - ny * 10);
-    rz.set(-9 + nx * 8);
+    ref.current.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+    ref.current.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
   };
-  const onLeave = () => {
-    rx.set(26);
-    rz.set(-9);
-  };
+
+  const tiles = [];
+  for (let r = 0; r < ROWS.length; r++) {
+    for (let c = 0; c < COLS.length; c++) {
+      const shop = r === SHOP.r && c === SHOP.c;
+      const light = (r + c) % 2 === 0;
+      tiles.push(
+        <rect
+          key={`${r}-${c}`}
+          x={COLS[c] + 10}
+          y={ROWS[r] + 10}
+          width={CW[c]}
+          height={RH[r]}
+          rx={3}
+          fill={shop ? "#c8202f" : light ? "#f4ecdc" : "#0f0b0a"}
+          fillOpacity={shop ? 1 : light ? 0.78 : 1}
+          stroke={light || shop ? "none" : "rgb(244 236 220 / 0.14)"}
+        />,
+      );
+    }
+  }
 
   return (
     <div
       ref={ref}
       onPointerMove={onMove}
-      onPointerLeave={onLeave}
-      className="relative aspect-[1/0.9] w-full [perspective:1300px]"
+      className="group relative overflow-hidden rounded-[20px] border border-paper/12 bg-[#2a211d] [--mx:62%] [--my:56%]"
     >
-      <motion.div
-        style={{ rotateX: srx, rotateZ: srz }}
-        className="absolute inset-[7%_4%_10%] rounded-[26px] border border-paper/12 bg-ink-2 shadow-[0_40px_80px_-30px_rgb(0_0_0/0.9)] [transform-style:preserve-3d]"
+      <svg viewBox="0 0 420 340" className="block h-auto w-full" aria-hidden>
+        {tiles}
+        {/* the one road that doesn't follow the grid */}
+        <path d="M-10 318 C 110 262, 170 300, 236 236 S 360 120, 432 92" stroke="#2a211d" strokeWidth="13" fill="none" />
+        <path
+          d="M-10 318 C 110 262, 170 300, 236 236 S 360 120, 432 92"
+          stroke="#f4ecdc"
+          strokeOpacity="0.45"
+          strokeWidth="1.5"
+          strokeDasharray="6 7"
+          fill="none"
+        />
+      </svg>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(38%_44%_at_var(--mx)_var(--my),rgb(255_226_196/0.22),transparent_70%),radial-gradient(130%_90%_at_50%_120%,rgb(15_11_10/0.65),transparent_60%)]"
+      />
+      {/* the star pin, on the shop's tile */}
+      <div
+        className="absolute -translate-x-1/2 -translate-y-full"
+        style={{
+          left: `${((COLS[SHOP.c] + 10 + CW[SHOP.c] / 2) / 420) * 100}%`,
+          top: `${((ROWS[SHOP.r] + 10 + RH[SHOP.r] / 2) / 340) * 100}%`,
+        }}
       >
-        <svg viewBox="0 0 400 360" className="absolute inset-0 h-full w-full overflow-hidden rounded-[26px]" aria-hidden>
-          <defs>
-            <pattern id="map-checker" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(-18)">
-              <rect width="12" height="12" fill="#f4ecdc" opacity="0.16" />
-              <rect width="6" height="6" fill="#f4ecdc" opacity="0.5" />
-              <rect x="6" y="6" width="6" height="6" fill="#f4ecdc" opacity="0.5" />
-            </pattern>
-            <clipPath id="map-clip">
-              <rect width="400" height="360" rx="26" />
-            </clipPath>
-          </defs>
-          <g clipPath="url(#map-clip)">
-            <g transform="rotate(-18 200 180)" stroke="#f4ecdc" fill="none" strokeLinecap="round">
-              {[-40, 30, 100, 170, 240, 310, 380, 450].map((x) => (
-                <line key={`v${x}`} x1={x} y1={-80} x2={x} y2={440} strokeOpacity={0.1} strokeWidth={5} />
-              ))}
-              {[-20, 50, 120, 190, 260, 330, 400].map((y) => (
-                <line key={`h${y}`} x1={-80} y1={y} x2={480} y2={y} strokeOpacity={0.1} strokeWidth={5} />
-              ))}
-              {/* the shop's block, tiled like the shop floor */}
-              <rect x={175} y={196} width={60} height={58} rx={4} fill="url(#map-checker)" stroke="none" />
-              <line x1={-80} y1={190} x2={480} y2={190} strokeOpacity={0.32} strokeWidth={11} />
-            </g>
-            <path
-              d="M-20 300 C 90 250, 150 330, 250 280 S 380 210, 430 240"
-              stroke="#f4ecdc"
-              strokeOpacity={0.22}
-              strokeWidth={14}
-              fill="none"
-            />
-            <path
-              d="M-20 300 C 90 250, 150 330, 250 280 S 380 210, 430 240"
-              stroke="#0f0b0a"
-              strokeOpacity={0.9}
-              strokeWidth={1.5}
-              strokeDasharray="7 7"
-              fill="none"
-            />
-          </g>
-        </svg>
-
-        {/* pin, standing up off the tilted map */}
-        <div
-          className="absolute top-[57%] left-[52%] [transform-style:preserve-3d]"
-          style={{ transform: "translate(-50%, -50%)" }}
-        >
-          <span
-            aria-hidden
-            className="absolute top-1/2 left-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-rose-lit/60 motion-safe:animate-[ping_2.4s_cubic-bezier(0,0,0.2,1)_infinite]"
-          />
-          <div className="origin-bottom" style={{ transform: "translateY(-50%) rotateX(-62deg) rotateZ(0deg)" }}>
-            <div className="flex flex-col items-center">
-              <div className="grid size-16 place-items-center rounded-full bg-rose text-paper shadow-[0_14px_24px_-8px_rgb(0_0_0/0.7)] ring-4 ring-ink-2">
-                <StarMark className="h-6 w-auto" />
-              </div>
-              <span className="h-7 w-[3px] rounded-full bg-gradient-to-b from-rose to-rose/0" />
-            </div>
+        <span
+          aria-hidden
+          className="absolute bottom-0 left-1/2 size-14 -translate-x-1/2 translate-y-1/2 rounded-full border-2 border-rose-lit/70 motion-safe:animate-[ping_2.4s_cubic-bezier(0,0,0.2,1)_infinite]"
+        />
+        <div className="flex flex-col items-center">
+          <div className="grid size-14 place-items-center rounded-full bg-paper text-rose shadow-[0_14px_22px_-8px_rgb(0_0_0/0.8)] ring-4 ring-rose">
+            <StarMark className="h-5 w-auto" />
           </div>
+          <span className="h-5 w-[3px] rounded-full bg-paper" />
         </div>
-      </motion.div>
-
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full border border-paper/15 bg-ink/85 px-4 py-2 text-center text-sm whitespace-nowrap text-paper backdrop-blur-sm">
+      </div>
+      <p className="absolute bottom-3 left-3 rounded-full bg-ink/90 px-3.5 py-1.5 text-sm text-paper">
         <span className="font-semibold">Feel Goods</span>
         <span className="text-mute"> · {studio.street}</span>
+      </p>
+    </div>
+  );
+}
+
+/** The shop door: the Open / Closed card on its string, the hours lettered on the glass, stickers below. */
+function Door({ className }: { className?: string }) {
+  const today = usePacificDay();
+  // Monday first, the way the shop's week runs
+  const order = [1, 2, 3, 4, 5, 6, 0];
+
+  return (
+    <div className={cn("door-frame rounded-t-[18px] rounded-b-[8px] p-3 shadow-[0_40px_70px_-30px_rgb(0_0_0/0.9)] sm:p-4", className)}>
+      <div className="door-glass relative flex flex-col items-center rounded-t-[10px] rounded-b-[4px] px-5 pt-3 pb-8 sm:px-9">
+        <DoorSign />
+
+        <h3 className="mt-7 font-script text-[2.6rem] leading-none text-paper">
+          <T en="Hours" es="Horario" />
+        </h3>
+        <table className="mt-4 w-full max-w-[22rem] text-[0.98rem] tabular">
+          <caption className="sr-only">
+            <T en="Opening hours, Pacific time" es="Horario de atención, hora del Pacífico" />
+          </caption>
+          <tbody>
+            {order.map((d) => (
+              <tr key={d} className={cn(today === d ? "text-paper" : "text-mute")}>
+                <th scope="row" className="py-1.5 pr-4 text-left align-top font-display text-[1.15rem] font-bold tracking-[0.04em] uppercase">
+                  <span className="inline-flex items-center gap-2">
+                    <T en={dayNames.en[d]} es={dayNames.es[d]} />
+                    {today === d ? (
+                      <span className="rounded-full bg-rose px-2 py-0.5 font-sans text-[0.7rem] font-bold tracking-normal text-paper normal-case">
+                        <T en="Today" es="Hoy" />
+                      </span>
+                    ) : null}
+                  </span>
+                </th>
+                <td className={cn("py-1.5 text-right align-top", today === d && "font-semibold")}>
+                  {schedule[d].length ? (
+                    schedule[d].map(([a, b]) => (
+                      <span key={a} className="block whitespace-nowrap">
+                        {formatTime(a)} – {formatTime(b)}
+                      </span>
+                    ))
+                  ) : (
+                    <T en="Closed" es="Cerrado" />
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="mt-4 w-full max-w-[22rem] text-sm text-mute">
+          <T en="Holiday closures are posted on Booksy." es="Los días festivos cerrados se publican en Booksy." />{" "}
+          <a
+            href={studio.bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-paper underline decoration-paper/40 hover:decoration-paper"
+          >
+            <T en="Check Booksy" es="Ver Booksy" />
+            <NewTab />
+          </a>
+        </p>
+
+        {/* the push bar */}
+        <div aria-hidden className="my-8 h-3 w-[86%] rounded-full bg-[linear-gradient(180deg,#f4f1ea,#8f8a84_45%,#5d5853)] shadow-[0_6px_12px_-4px_rgb(0_0_0/0.8)]" />
+
+        {/* amenity stickers on the glass */}
+        <ul className="flex flex-wrap justify-center gap-2.5">
+          {amenities.map((a) => {
+            const Icon = icons[a.id];
+            return (
+              <li
+                key={a.id}
+                className="inline-flex items-center gap-2 rounded-full bg-paper py-1.5 pr-3.5 pl-1.5 text-[0.88rem] font-semibold text-ink shadow-[0_6px_14px_-8px_rgb(0_0_0/0.8)]"
+              >
+                <span className="grid size-7 place-items-center rounded-full bg-rose text-paper">
+                  <Icon aria-hidden className="size-3.5" />
+                </span>
+                <T en={a.en} es={a.es} />
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
 }
 
 export function Visit() {
-  const today = usePacificDay();
-
-  // Monday first, the way the shop's week runs
-  const order = [1, 2, 3, 4, 5, 6, 0];
-
   return (
     <section id="visit" className="relative z-10" aria-labelledby="visit-title">
-      <CheckerSeam from="var(--color-paper)" to="var(--color-ink)" />
       <div className="grain relative overflow-hidden bg-ink text-paper">
         <Halftone
           src="/images/textures/halftone-shop-src.webp"
@@ -142,35 +210,19 @@ export function Visit() {
           invert
           className="inset-0 h-full w-full [mask-image:linear-gradient(180deg,transparent,black_18%,black_65%,transparent)]"
         />
-        <div className="relative mx-auto max-w-[1440px] px-5 pt-12 pb-24 sm:px-8 lg:px-12 lg:pt-16 lg:pb-32">
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-            <div className="lg:col-span-6">
-              <h2
+        <CheckerSeam from="var(--color-paper)" to="transparent" />
+        <div className="relative mx-auto max-w-[1440px] px-5 pt-6 pb-24 sm:px-8 lg:px-12 lg:pt-8 lg:pb-32">
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-14">
+            <div className="lg:col-span-7 lg:col-start-6 lg:row-start-1">
+              <Heading
                 id="visit-title"
-                className="text-[clamp(2.6rem,7vw,5.75rem)] leading-[0.95] font-light tracking-[-0.035em] text-balance"
-              >
-                <T
-                  en={
-                    <>
-                      Come see us <strong className="font-extrabold">in Pittsburg.</strong>
-                    </>
-                  }
-                  es={
-                    <>
-                      Visítanos <strong className="font-extrabold">en Pittsburg.</strong>
-                    </>
-                  }
-                />
-              </h2>
-
+                en={{ main: "Come see us", accent: "in Pittsburg" }}
+                es={{ main: "Visítanos", accent: "en Pittsburg" }}
+              />
               <address className="mt-8 not-italic">
-                <p className="font-display text-5xl leading-none font-extrabold uppercase sm:text-6xl">
-                  {studio.street}
-                </p>
+                <p className="font-display text-5xl leading-none font-extrabold uppercase sm:text-6xl">{studio.street}</p>
                 <p className="mt-2 text-lg text-mute">{studio.cityLine}</p>
               </address>
-              <OpenStatus className="mt-5 text-base text-paper" />
-
               <div className="mt-7 flex flex-wrap gap-3">
                 <Cta href={studio.mapsUrl}>
                   <T en="Get directions" es="Cómo llegar" />
@@ -180,67 +232,12 @@ export function Visit() {
                   <span className="tabular">{studio.phone}</span>
                 </Cta>
               </div>
-
-              <h3 className="mt-12 text-xl font-extrabold tracking-[-0.01em]">
-                <T en="Hours" es="Horario" />
-              </h3>
-              <table className="mt-4 w-full max-w-md text-[0.98rem] tabular">
-                <caption className="sr-only">
-                  <T en="Opening hours, Pacific time" es="Horario de atención, hora del Pacífico" />
-                </caption>
-                <tbody>
-                  {order.map((d) => (
-                    <tr
-                      key={d}
-                      className={cn(
-                        "border-b border-paper/10",
-                        today === d ? "text-paper" : "text-mute",
-                      )}
-                    >
-                      <th scope="row" className="py-2.5 pr-4 text-left align-top font-medium">
-                        <span className="inline-flex items-center gap-2">
-                          {today === d ? <span aria-hidden className="size-1.5 rounded-full bg-rose-lit" /> : null}
-                          <T en={dayNames.en[d]} es={dayNames.es[d]} />
-                          {today === d ? (
-                            <span className="text-xs font-semibold text-rose-lit">
-                              <T en="Today" es="Hoy" />
-                            </span>
-                          ) : null}
-                        </span>
-                      </th>
-                      <td className={cn("py-2.5 text-right align-top", today === d && "font-semibold")}>
-                        {schedule[d].length ? (
-                          schedule[d].map(([a, b]) => (
-                            <span key={a} className="block whitespace-nowrap">
-                              {formatTime(a)} – {formatTime(b)}
-                            </span>
-                          ))
-                        ) : (
-                          <T en="Closed" es="Cerrado" />
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="mt-10">
+                <FloorMap />
+              </div>
             </div>
 
-            <div className="flex flex-col gap-10 lg:col-span-6 lg:pt-4">
-              <StylizedMap />
-              <ul className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
-                {amenities.map((a) => {
-                  const Icon = icons[a.id];
-                  return (
-                    <li key={a.id} className="flex items-center gap-3 text-paper/90">
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full border border-paper/15 text-rose-lit">
-                        <Icon aria-hidden className="size-4" />
-                      </span>
-                      <T en={a.en} es={a.es} />
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <Door className="mx-auto w-full max-w-[30rem] lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:mt-4 lg:self-start" />
           </div>
         </div>
       </div>

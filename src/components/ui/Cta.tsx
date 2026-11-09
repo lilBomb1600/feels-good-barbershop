@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
+import { T } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 const styles = {
@@ -48,8 +49,17 @@ export function Cta({
           className="size-[1.1em] transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
         />
       ) : null}
-      {ext ? <span className="sr-only"> (opens in a new tab)</span> : null}
+      {ext ? <NewTab /> : null}
     </a>
+  );
+}
+
+/** Screen-reader note for links that open a new tab, in the visitor's language. */
+export function NewTab() {
+  return (
+    <span className="sr-only">
+      <T en=" (opens in a new tab)" es=" (se abre en una pestaña nueva)" />
+    </span>
   );
 }
 
@@ -77,10 +87,15 @@ export function Stars({
     </span>
   );
   return (
-    <span className={cn("relative inline-flex", className)} role="img" aria-label={`${value} out of 5`}>
-      {row("currentColor")}
-      <span className={cn("absolute inset-y-0 left-0 overflow-hidden", fillClass)} style={{ width: pct }}>
+    <span className={cn("relative inline-flex", className)}>
+      <span className="sr-only">
+        <T en={`${value} out of 5 stars`} es={`${value} de 5 estrellas`} />
+      </span>
+      <span aria-hidden className="inline-flex">
         {row("currentColor")}
+        <span className={cn("absolute inset-y-0 left-0 overflow-hidden", fillClass)} style={{ width: pct }}>
+          {row("currentColor")}
+        </span>
       </span>
     </span>
   );

@@ -1,4 +1,4 @@
-// Feel Goods Barbershop, Pittsburg CA. Facts here come from the shop's Booksy page and the first site.
+// Feel Goods Barbershop, Pittsburg CA. Facts here come from the shop's Booksy page (checked 2026-11-09) and the first site.
 // Unconfirmed details (a flyer with another address/handle) are listed in CONFIRM.md, not published.
 export const studio = {
   name: "Feel Goods Barbershop",
@@ -14,31 +14,24 @@ export const studio = {
   established: 2021,
   barber: "Johnny Blendz",
   rating: 4.6,
-  reviewCount: 125,
+  reviewCount: 134,
   mapsUrl: "https://maps.google.com/?q=2+Buena+Vista+Pittsburg+CA+94565",
 } as const;
 
-/** Opening hours in minutes after midnight, Pacific time. Index 0 is Sunday. */
+/**
+ * Opening hours in minutes after midnight, Pacific time. Index 0 is Sunday.
+ * From the shop's Booksy page on 2026-11-09: Mon-Fri 11:00 AM-8:00 PM, Sat 12:00-5:00 PM, Sun closed.
+ * (The first site had a Mon-Thu lunch split; see CONFIRM.md item 8.) Booksy also posts one-off holiday closures,
+ * which this table can't know about, so the Visit section links to Booksy for them.
+ */
 export const schedule: ReadonlyArray<ReadonlyArray<readonly [number, number]>> = [
   [],
-  [
-    [660, 720],
-    [810, 1170],
-  ],
-  [
-    [660, 720],
-    [810, 1170],
-  ],
-  [
-    [660, 720],
-    [810, 1170],
-  ],
-  [
-    [660, 720],
-    [810, 1170],
-  ],
-  [[600, 1140]],
-  [[780, 1140]],
+  [[660, 1200]],
+  [[660, 1200]],
+  [[660, 1200]],
+  [[660, 1200]],
+  [[660, 1200]],
+  [[720, 1020]],
 ];
 
 export const dayNames = {

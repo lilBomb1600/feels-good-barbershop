@@ -20,6 +20,8 @@ INK = np.array([18, 13, 11], np.float32)
 PAPER = np.array([244, 236, 220], np.float32)
 
 TILE = [640, 1280]
+# price photos also show as ~70-90 px thumbnails on phones, so they get small steps too
+PRICE = [256, 320, 640, 1280]
 WIDE = [640, 1280, 1920, 2560]
 
 # id: (source, crop box x0,y0,x1,y1 relative, widths, grade)
@@ -46,10 +48,11 @@ PHOTOS = {
     "beard-bun": ("017", (0.14, 0.24, 0.90, 1.0), TILE, "rose"),
     "beard-fade": ("000", (0.10, 0.0, 0.886, 1.0), TILE, "rose"),
     # price board
-    "price-adults": ("024", (0.06, 0.18, 0.84, 0.96), TILE, "rose"),
-    "price-seniors": ("007", (0.04, 0.08, 0.96, 1.0), TILE, "rose"),
-    "price-kids": ("073", (0.0, 0.02, 0.78, 0.80), TILE, "rose"),
-    "price-towel": ("031", (0.17, 0.0, 0.7325, 1.0), TILE, "rose"),
+    "price-adults": ("024", (0.06, 0.18, 0.84, 0.96), PRICE, "rose"),
+    # tight on the chair back and the striped cape with its red signature (no counter, no ceiling)
+    "price-seniors": ("007", (0.15, 0.555, 0.60, 1.0), PRICE, "rose"),
+    "price-kids": ("073", (0.0, 0.02, 0.78, 0.80), PRICE, "rose"),
+    "price-towel": ("031", (0.17, 0.0, 0.7325, 1.0), PRICE, "rose"),
     # barber portrait, cropped above the shirt print (confirm it is Johnny, see CONFIRM.md)
     "barber": ("025", (0.205, 0.32, 0.45, 0.5725), TILE, "rose"),
     # textures

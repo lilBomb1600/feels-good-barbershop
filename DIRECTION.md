@@ -121,3 +121,16 @@ Back and side views are preferred. No child's face is the hero, and nothing with
 **Pipeline:** `scripts/photos.py` (crop, rose grade, EXIF strip, never upscale) and `scripts/halftone.py`.
 - Tiles export at 640/1280, capped at the crop's real width. They never render wider than about 600 CSS px, so 1920/2560 would be dead weight.
 - The full-bleed textures (cape, shop) export at 640/1280/1920/2560, also capped.
+
+## Revision 2 (2026-11-09): away from the HARD PART skeleton
+
+A design review found the page structure still mapped one to one onto HARD PART (bottom-left hero cluster, five-column price rows with a Book pill each, light/extrabold headings, number-left/quote-right reviews, tilted dark map card). Recomposed in the shop's own language:
+
+- **Headings:** Big Shoulders block caps with one Mr Dafoe script phrase under them, the way their flyer pairs FEEL with Goods (`src/components/ui/Heading.tsx`).
+- **Hero:** the live status is the shop-window neon, hung top left in front of the lettering (lit rose tube when open, unlit glass when closed). The bottom is a baseboard: copy left, the booking pill centred right under the pole base, rating right. A scrim keeps the front floor rows dark under the copy (measured 6.4:1 or better with the lamp anywhere, 360 to 1920), and the lamp is clamped off the front rows.
+- **Prices:** a sign-painted board in the same chrome frame as the station mirrors. Rows run out on dotted leaders, the number is a rose rubber stamp that inks on hover, one Book on Booksy for the whole board. The cut photo still follows the cursor.
+- **Lookbook:** "All" leads with the greek key as a 2x2 feature (it flips to the side angle), then eight more; the rest sit behind "Show all 16 cuts".
+- **Reviews:** the six quotes are slips torn off a ticket roll, stacked in a deck you flick through; the 4.6 is a rubber stamp seal ("134 reviews on Booksy" around the ring) inked across the corner.
+- **Visit:** the hours are lettered on the shop door's glass, with the Open / Closed card hanging on its string and the amenities as door stickers. The map is the floor itself: blocks as checker tiles, streets as the grout, the shop's tile rose with the star pin, and the hero's lamp following the mouse across it.
+- **Cape loader:** one sheet with a curved hem (a 25-point polygon, each point with its own head start, eased per point) and a two-step shadow under the edge. The head script runs the clock and the Skip button, so it lifts 1.5 s after first paint even before the JavaScript loads.
+- **Seams:** the checker band now sits inside the next section and folds away onto that section's own ground, so no flat stripe is left behind.

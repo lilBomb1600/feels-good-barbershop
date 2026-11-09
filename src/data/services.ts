@@ -2,7 +2,8 @@
 export type Service = {
   id: string;
   name: { en: string; es: string };
-  note: { en: string; es: string };
+  /** only where it adds a fact the name doesn't already say */
+  note?: { en: string; es: string };
   price: number;
   duration: { en: string; es: string };
   photo: string;
@@ -13,7 +14,6 @@ export const services: Service[] = [
   {
     id: "adults",
     name: { en: "Adults", es: "Adultos" },
-    note: { en: "Haircut for adults.", es: "Corte para adultos." },
     price: 50,
     duration: { en: "1 hr", es: "1 h" },
     photo: "price-adults",
@@ -25,19 +25,17 @@ export const services: Service[] = [
   {
     id: "seniors",
     name: { en: "Seniors", es: "Adultos mayores" },
-    note: { en: "Haircut at the senior price.", es: "Corte con precio para adultos mayores." },
     price: 40,
     duration: { en: "1 hr", es: "1 h" },
     photo: "price-seniors",
     photoAlt: {
-      en: "An empty barber chair with a striped cape at the station",
-      es: "Silla de barbero vacía con capa a rayas en la estación",
+      en: "A barber chair under a striped cape",
+      es: "Silla de barbero cubierta con una capa a rayas",
     },
   },
   {
     id: "kids",
     name: { en: "Kids", es: "Niños" },
-    note: { en: "Haircut for kids.", es: "Corte para niños." },
     price: 40,
     duration: { en: "1 hr", es: "1 h" },
     photo: "price-kids",

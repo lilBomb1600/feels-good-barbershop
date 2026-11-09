@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // git-ignored working folders (QA scripts, source photos)
+    ".qa/**",
+    ".playwright-cli/**",
+    "assets-inbox/**",
   ]),
 ]);
 

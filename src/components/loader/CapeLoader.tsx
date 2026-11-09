@@ -1,113 +1,76 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useSyncExternalStore, type CSSProperties } from "react";
 import { PoleStripes } from "@/components/ui/PoleStripes";
 import { StarMark } from "@/components/ui/StarMark";
 import { T } from "@/lib/i18n";
-import { useClientValue } from "@/lib/client-stores";
 
-export const CAPE_KEY = "fg-cape";
-const STRIPS = 22;
-const HOLD_MS = 1500;
-const LIFT_MS = 1300;
-
-/**
+/*
  * "Cape off": the page opens under the shop's own rose cape, then the cape is whipped off the way a
- * barber pulls it at the end of a cut. The cape lifts in vertical strips on a staggered, wave-shaped
- * delay so the hem ripples like fabric. Once per session; skippable (button or Esc); skipped entirely
- * with reduced motion. The inline head script hides it before paint on repeat visits.
+ * barber pulls it at the end of a cut. The inline head script in layout.tsx owns the timing and the
+ * Skip button (html[data-cape]); this file draws the cape. Its hem is a curve, not a straight edge:
+ * a polygon of points along the bottom, each with its own head start, so the left side leaves first
+ * and the hem sweeps up in a bent S, with a soft shadow falling on the shop below.
  */
+
+const POINTS = 24;
+const SPAN = 0.8; // how much of the lift each hem point takes to travel
+
+/** Per-point progress (--cK, 0..1) and its smoothstep (--sK), declared once on the root. */
+const vars: Record<string, string> = {};
+const hem = (offset: number) => {
+  const pts = ["0% -45%", "100% -45%"];
+  for (let k = POINTS; k >= 0; k--) {
+    pts.push(`${((k / POINTS) * 100).toFixed(2)}% calc(${103 + offset}% - 140% * var(--s${k}))`);
+  }
+  return `polygon(${pts.join(", ")})`;
+};
+for (let k = 0; k <= POINTS; k++) {
+  const u = k / POINTS;
+  // pulled from the left; the sine keeps neighbours from moving in lockstep, so the hem ripples
+  const head = 0.62 * u + 0.06 * Math.sin(u * Math.PI * 2.2);
+  vars[`--c${k}`] = `clamp(0, (var(--lift) - ${head.toFixed(3)}) / ${SPAN}, 1)`;
+  vars[`--s${k}`] = `calc(var(--c${k}) * var(--c${k}) * (3 - 2 * var(--c${k})))`;
+}
+const CAPE = hem(0);
+const SHADOW_NEAR = hem(3);
+const SHADOW_FAR = hem(7);
+
+function subscribe(cb: () => void) {
+  const mo = new MutationObserver(cb);
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-cape"] });
+  return () => mo.disconnect();
+}
+const getCape = () => document.documentElement.dataset.cape ?? "off";
+
 export function CapeLoader() {
-  const [phase, setPhase] = useState<"cover" | "lift" | "done">("cover");
-  const timers = useRef<number[]>([]);
-  // decided before first paint by the inline head script (repeat visit or reduced motion)
-  const skipped = useClientValue(() => document.documentElement.dataset.cape === "off");
-
-  const lift = useCallback(() => {
-    setPhase((p) => (p === "cover" ? "lift" : p));
-    timers.current.push(window.setTimeout(() => setPhase("done"), LIFT_MS));
-  }, []);
-
-  useEffect(() => {
-    const html = document.documentElement;
-    if (html.dataset.cape === "off") return;
-    try {
-      sessionStorage.setItem(CAPE_KEY, "1");
-    } catch {
-      /* storage blocked: it just plays again next time */
-    }
-    html.style.overflow = "hidden";
-    timers.current.push(window.setTimeout(lift, HOLD_MS));
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && lift();
-    window.addEventListener("keydown", onKey);
-    const t = timers.current;
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      t.forEach(clearTimeout);
-      html.style.overflow = "";
-    };
-  }, [lift]);
-
-  useEffect(() => {
-    if (phase !== "cover") document.documentElement.style.overflow = "";
-    if (phase === "done") document.documentElement.dataset.cape = "off";
-  }, [phase]);
-
-  if (skipped || phase === "done") return null;
-  const lifting = phase === "lift";
+  // the server always renders the cape; CSS shows it only when the head script said it plays
+  const cape = useSyncExternalStore(subscribe, getCape, () => "on");
+  if (cape === "off") return null;
 
   return (
-    <div className="cape-loader fixed inset-0 z-[100]" aria-hidden={lifting}>
-      {Array.from({ length: STRIPS }, (_, i) => {
-        // pulled from the left; a smooth wave across neighbours makes the hem ripple instead of step
-        const u = i / (STRIPS - 1);
-        const delay = 40 + u * 360 + Math.sin(u * Math.PI * 2) * 55;
-        return (
-          <div
-            key={i}
-            className="absolute inset-y-0 will-change-transform"
-            style={
-              {
-                left: `${(i / STRIPS) * 100}%`,
-                width: `calc(${100 / STRIPS}% + 1px)`,
-                transform: lifting ? `translate3d(0, -118%, 0) scaleY(1.06)` : "translate3d(0,0,0)",
-                transition: `transform 760ms cubic-bezier(0.7, 0, 0.22, 1) ${delay}ms`,
-                transformOrigin: "50% 0%",
-              } as CSSProperties
-            }
-          >
-            <div className="absolute inset-0 overflow-hidden">
-              <div
-                className="cape-fabric absolute inset-y-0 w-[100vw]"
-                style={{ left: `calc(${(-i * 100) / STRIPS}vw)` }}
-              />
-              {/* the hem: a fold of shadow along the bottom edge */}
-              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-black/55" />
-            </div>
-            {/* the shadow the lifting cape throws on the shop below */}
-            <div className="absolute inset-x-0 top-full h-24 bg-gradient-to-b from-black/45 to-transparent" />
-          </div>
-        );
-      })}
-
-      {/* centre lockup, darkened locally so it reads on the busy fabric */}
-      <div
-        className="pointer-events-none absolute inset-0 grid place-items-center transition-opacity duration-300"
-        style={{ opacity: lifting ? 0 : 1 }}
-      >
+    <div className="cape-loader fixed inset-0 z-[100]" style={vars as CSSProperties}>
+      {/* the shadow the rising hem throws on the shop: two soft steps under the edge */}
+      <div aria-hidden className="absolute inset-0 bg-black/20" style={{ clipPath: SHADOW_FAR }} />
+      <div aria-hidden className="absolute inset-0 bg-black/30" style={{ clipPath: SHADOW_NEAR }} />
+      <div aria-hidden className="cape-sheet" style={{ clipPath: CAPE }}>
+        <div className="cape-fabric" />
         <div className="absolute inset-0 bg-[radial-gradient(42%_38%_at_50%_50%,rgb(10_6_6/0.72),rgb(10_6_6/0.18)_70%,transparent)]" />
-        <div className="relative flex flex-col items-center text-paper">
+      </div>
+
+      <div className="cape-lockup pointer-events-none absolute inset-0 grid place-items-center">
+        <div className="flex flex-col items-center text-paper">
           <StarMark className="h-9 w-auto text-paper" />
           <p className="mt-4 flex items-baseline gap-3">
             <span className="font-display text-6xl leading-none font-black uppercase sm:text-7xl">Feel</span>
             <span className="script-stroke font-script text-6xl leading-none text-rose-lit sm:text-7xl">Goods</span>
           </p>
-          <div className="relative mt-6 h-2.5 w-56 overflow-hidden rounded-full bg-paper/15">
+          <div aria-hidden className="relative mt-6 h-2.5 w-56 overflow-hidden rounded-full bg-paper/15">
             <div className="cape-progress absolute inset-0 overflow-hidden rounded-full">
               <PoleStripes size={22} />
             </div>
           </div>
-          <p className="mt-4 text-sm text-paper/80">
+          <p className="mt-4 text-sm text-paper/85">
             <T en="Barbershop · Pittsburg, CA" es="Barbería · Pittsburg, CA" />
           </p>
         </div>
@@ -115,9 +78,8 @@ export function CapeLoader() {
 
       <button
         type="button"
-        onClick={lift}
-        className="pointer-events-auto absolute top-4 right-4 h-10 rounded-full border border-paper/35 bg-ink/50 px-5 text-sm font-semibold text-paper backdrop-blur-sm transition-colors hover:bg-ink/80 sm:top-6 sm:right-6"
-        style={{ opacity: lifting ? 0 : 1 }}
+        data-cape-skip=""
+        className="cape-lockup absolute top-4 right-4 h-10 rounded-full border border-paper/35 bg-ink/60 px-5 text-sm font-semibold text-paper transition-colors hover:bg-ink/85 sm:top-6 sm:right-6"
       >
         <T en="Skip" es="Saltar" />
       </button>

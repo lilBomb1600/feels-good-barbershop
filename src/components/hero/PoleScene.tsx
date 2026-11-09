@@ -313,20 +313,23 @@ function Rig({ onReady, still }: { onReady?: () => void; still: boolean }) {
     // the lamp: follows a mouse, drifts on its own for touch or when the mouse rests
     const t = state.clock.elapsedTime;
     const ptr = pointer.current;
+    // the lamp stays on the floor around the pole: kept off the front rows, where the copy sits
     if (still) {
-      lightTarget.current.set(1.1, 0, 1.5);
+      lightTarget.current.set(0.9, 0, 0.7);
     } else if (ptr && performance.now() - ptr.t < 4000) {
-      lightTarget.current.set(ptr.x * 3.4, 0, 0.6 + ptr.y * 2.2);
+      lightTarget.current.set(THREE.MathUtils.clamp(ptr.x * 3.2, -2.5, 2.5), 0, THREE.MathUtils.clamp(0.2 + ptr.y * 2, -1.6, 1.1));
     } else {
-      lightTarget.current.set(Math.sin(t * 0.35) * 2.2, 0, 1.3 + Math.cos(t * 0.27) * 0.9);
+      lightTarget.current.set(Math.sin(t * 0.35) * 2, 0, 0.4 + Math.cos(t * 0.27) * 0.7);
     }
     lightPos.current.lerp(lightTarget.current, 1 - Math.exp(-delta * 4));
     if (point.current) point.current.position.set(lightPos.current.x, 1.75, lightPos.current.z + 0.9);
 
     // camera: tall screens pull back and aim low so the pole sits above the copy; a touch of
     // parallax from the lamp; then the scroll lift
-    const tall = size.width / size.height < 0.8;
-    const z = tall ? 11.2 : 7.8;
+    const aspect = size.width / size.height;
+    const tall = aspect < 0.8;
+    // squarer landscape screens (1024x768) step back a little so the base clears the booking pill
+    const z = tall ? 11.2 : 7.8 + THREE.MathUtils.clamp((1.6 - aspect) * 6, 0, 1.8);
     const look = tall ? 0.82 : 1.62;
     const px = still ? 0 : lightPos.current.x * 0.06;
     camera.position.set(px, 1.5 + p * 1.5, z - p * 1.2);

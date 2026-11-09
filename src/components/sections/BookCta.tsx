@@ -2,6 +2,7 @@
 
 import { Phone } from "lucide-react";
 import { Cta } from "@/components/ui/Cta";
+import { Heading } from "@/components/ui/Heading";
 import { Photo } from "@/components/ui/Photo";
 import { studio } from "@/data/business";
 import { T, useT } from "@/lib/i18n";
@@ -18,24 +19,13 @@ export function BookCta() {
       />
       <div className="relative mx-auto grid max-w-[1440px] items-center gap-12 px-5 py-20 sm:px-8 lg:grid-cols-12 lg:px-12 lg:py-28">
         <div className="lg:col-span-7">
-          <h2
+          <Heading
             id="book-title"
-            className="text-[clamp(2.8rem,8vw,6.5rem)] leading-[0.92] font-light tracking-[-0.035em] text-balance text-paper"
-          >
-            <T
-              en={
-                <>
-                  Ready when <strong className="font-extrabold">you are.</strong>
-                </>
-              }
-              es={
-                <>
-                  Listos cuando <strong className="font-extrabold">tú quieras.</strong>
-                </>
-              }
-            />
-          </h2>
-          <p className="mt-5 max-w-[38ch] text-lg leading-relaxed text-paper/85">
+            className="text-paper"
+            en={{ main: "Ready when", accent: "you are" }}
+            es={{ main: "Listos cuando", accent: "tú quieras" }}
+          />
+          <p className="mt-7 max-w-[38ch] text-lg leading-relaxed text-paper/85">
             <T
               en="Pick a time with Johnny on Booksy, or call the shop."
               es="Escoge tu hora con Johnny en Booksy, o llama a la barbería."

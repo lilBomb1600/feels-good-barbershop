@@ -49,7 +49,10 @@ const css = (s: CSSProperties) =>
     .join(";");
 const LAYER_CSS = css(LAYER);
 const SHOWN_CSS = css(SHOWN);
-const TAG_HTML = "<b>Preview</b><span>Concept by Arman Digital · (925) 252-6347</span>";
+// Both languages ride along (html[data-lang] shows one); "Concept by" drops on small phones so the number always fits.
+const TAG_HTML =
+  '<b><i data-l="en">Preview</i><i data-l="es">Muestra</i></b>' +
+  '<span><i class="pt-by" data-l="en">Concept by </i><i class="pt-by" data-l="es">Diseño de </i>Arman Digital · (925) 252-6347</span>';
 
 function restore() {
   let layer = document.querySelector<HTMLElement>("[data-preview-mark]");
@@ -91,10 +94,13 @@ export function PreviewMark() {
   return (
     <>
       <div data-preview-mark="" aria-hidden="true" style={LAYER} />
-      <a data-preview-tag="" href="tel:+19252526347" className="preview-tag" style={SHOWN}>
-        <b>Preview</b>
-        <span>Concept by Arman Digital · (925) 252-6347</span>
-      </a>
+      <a
+        data-preview-tag=""
+        href="tel:+19252526347"
+        className="preview-tag"
+        style={SHOWN}
+        dangerouslySetInnerHTML={{ __html: TAG_HTML }}
+      />
     </>
   );
 }

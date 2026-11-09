@@ -30,7 +30,15 @@ const esAt = (min: number) => {
   return `${h === 1 ? "a la" : "a las"} ${formatTime(min)}`;
 };
 
-export type OpenStatus = { open: boolean; text: string };
+/** open: lit or not; word: the sign ("Open" / "Closed"); detail: what happens next; text: both as one line. */
+export type OpenStatus = { open: boolean; word: string; detail: string; text: string };
+
+function status(lang: Lang, open: boolean, detail: string, word?: string): OpenStatus {
+  const es = lang === "es";
+  const w = word ?? (open ? (es ? "Abierto" : "Open") : es ? "Cerrado" : "Closed");
+  const lead = open ? (es ? "Abierto ahora" : "Open now") : word ?? (es ? "Cerrado ahora" : "Closed now");
+  return { open, word: w, detail, text: `${lead} · ${detail}` };
+}
 
 export function openStatus(lang: Lang, date = new Date()): OpenStatus {
   const { day, minutes } = pacificNow(date);
@@ -41,12 +49,8 @@ export function openStatus(lang: Lang, date = new Date()): OpenStatus {
     const [start, end] = today[i];
     if (minutes >= start && minutes < end) {
       const lunch = i < today.length - 1;
-      if (lunch)
-        return {
-          open: true,
-          text: es ? `Abierto ahora · descanso ${esAt(end)}` : `Open now · lunch break at ${formatTime(end)}`,
-        };
-      return { open: true, text: es ? `Abierto ahora · cierra ${esAt(end)}` : `Open now · closes at ${formatTime(end)}` };
+      if (lunch) return status(lang, true, es ? `descanso ${esAt(end)}` : `lunch break at ${formatTime(end)}`);
+      return status(lang, true, es ? `cierra ${esAt(end)}` : `closes at ${formatTime(end)}`);
     }
   }
 
@@ -54,32 +58,26 @@ export function openStatus(lang: Lang, date = new Date()): OpenStatus {
   if (laterToday) {
     const onBreak = today.some(([, end]) => end <= minutes);
     if (onBreak)
-      return {
-        open: false,
-        text: es ? `En descanso · regresa ${esAt(laterToday[0])}` : `On lunch break · back at ${formatTime(laterToday[0])}`,
-      };
-    return {
-      open: false,
-      text: es ? `Cerrado ahora · abre hoy ${esAt(laterToday[0])}` : `Closed now · opens today at ${formatTime(laterToday[0])}`,
-    };
+      return status(
+        lang,
+        false,
+        es ? `regresa ${esAt(laterToday[0])}` : `back at ${formatTime(laterToday[0])}`,
+        es ? "En descanso" : "On lunch break",
+      );
+    return status(lang, false, es ? `abre hoy ${esAt(laterToday[0])}` : `opens today at ${formatTime(laterToday[0])}`);
   }
 
   for (let step = 1; step <= 7; step++) {
     const d = (day + step) % 7;
     if (schedule[d].length) {
       const start = schedule[d][0][0];
-      if (step === 1)
-        return {
-          open: false,
-          text: es ? `Cerrado ahora · abre mañana ${esAt(start)}` : `Closed now · opens tomorrow at ${formatTime(start)}`,
-        };
-      return {
-        open: false,
-        text: es
-          ? `Cerrado ahora · abre el ${dayNames.es[d].toLowerCase()} ${esAt(start)}`
-          : `Closed now · opens ${dayNames.en[d]} at ${formatTime(start)}`,
-      };
+      if (step === 1) return status(lang, false, es ? `abre mañana ${esAt(start)}` : `opens tomorrow at ${formatTime(start)}`);
+      return status(
+        lang,
+        false,
+        es ? `abre el ${dayNames.es[d].toLowerCase()} ${esAt(start)}` : `opens ${dayNames.en[d]} at ${formatTime(start)}`,
+      );
     }
   }
-  return { open: false, text: es ? "Cerrado" : "Closed" };
+  return status(lang, false, es ? "revisa Booksy" : "check Booksy");
 }
