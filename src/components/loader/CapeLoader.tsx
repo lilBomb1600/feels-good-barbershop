@@ -7,9 +7,9 @@ import { T } from "@/lib/i18n";
 import { useClientValue } from "@/lib/client-stores";
 
 export const CAPE_KEY = "fg-cape";
-const STRIPS = 14;
+const STRIPS = 22;
 const HOLD_MS = 1500;
-const LIFT_MS = 1150;
+const LIFT_MS = 1300;
 
 /**
  * "Cape off": the page opens under the shop's own rose cape, then the cape is whipped off the way a
@@ -59,8 +59,9 @@ export function CapeLoader() {
   return (
     <div className="cape-loader fixed inset-0 z-[100]" aria-hidden={lifting}>
       {Array.from({ length: STRIPS }, (_, i) => {
-        // pulled from the left, with a ripple running through the hem
-        const delay = i * 34 + Math.sin(i * 0.95) * 46 + 40;
+        // pulled from the left; a smooth wave across neighbours makes the hem ripple instead of step
+        const u = i / (STRIPS - 1);
+        const delay = 40 + u * 360 + Math.sin(u * Math.PI * 2) * 55;
         return (
           <div
             key={i}

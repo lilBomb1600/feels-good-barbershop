@@ -5,7 +5,7 @@ import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { CapeLoader } from "@/components/loader/CapeLoader";
 import { PreviewMark } from "@/components/ui/PreviewMark";
-import { LangProvider } from "@/lib/i18n";
+import { Providers } from "@/lib/i18n";
 
 const big = Big_Shoulders({ subsets: ["latin"], axes: ["opsz"], variable: "--font-big", display: "swap" });
 const dafoe = Mr_Dafoe({ subsets: ["latin"], weight: "400", variable: "--font-dafoe", display: "swap" });
@@ -46,12 +46,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-svh">
-        <LangProvider>
+        <Providers>
           <CapeLoader />
           <Nav />
           <main className="overflow-x-clip">{children}</main>
           <Footer />
-        </LangProvider>
+        </Providers>
         <PreviewMark />
       </body>
     </html>

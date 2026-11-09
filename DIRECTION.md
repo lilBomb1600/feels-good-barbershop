@@ -29,7 +29,7 @@ The grade turns cluttered phone shots into one consistent editorial set, and the
 **What happens:**
 - The screen opens covered by their real rose cape. It is a crop of fg-085, cape-graded so the roses are deep red on black fabric.
 - In the middle, the name sits over a progress bar made of the moving pole stripe (the existing seam-free `PoleStripes` SVG).
-- Then the cape gets **whipped off** the way a barber pulls it at the end of a cut. It lifts in 14 vertical strips with a staggered, wave-shaped delay, so the hem ripples like fabric while the shop is revealed underneath.
+- Then the cape gets **whipped off** the way a barber pulls it at the end of a cut. It lifts in 22 vertical strips with a staggered, wave-shaped delay, so the hem ripples like fabric while the shop is revealed underneath.
 - It plays once per session (sessionStorage, plus an inline head script so a repeat visit never flashes it). It is skippable with a Skip button or the Esc key.
 - With reduced motion it doesn't play at all. Without JS it is hidden by a noscript style.
 

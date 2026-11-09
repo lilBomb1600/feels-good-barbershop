@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion, type PanInfo } from "framer-motion";
+import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CheckerSeam } from "@/components/ui/CheckerSeam";
 import { Cta, Stars } from "@/components/ui/Cta";
@@ -19,7 +19,6 @@ const serviceEs: Record<string, string> = {
 /** The real Booksy rating, big, with the six real quotes in a carousel over a halftone rose. */
 export function Reviews() {
   const [[i, dir], set] = useState<[number, number]>([0, 1]);
-  const reduce = useReducedMotion();
   const go = (d: number) => set(([cur]) => [(cur + d + reviews.length) % reviews.length, d]);
   const r = reviews[i];
 
@@ -86,13 +85,13 @@ export function Reviews() {
                   <motion.figure
                     key={i}
                     custom={dir}
-                    drag={reduce ? false : "x"}
+                    drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={0.25}
                     onDragEnd={onDragEnd}
-                    initial={reduce ? { opacity: 0 } : { opacity: 0, x: dir * 60, filter: "blur(8px)" }}
+                    initial={{ opacity: 0, x: dir * 60, filter: "blur(8px)" }}
                     animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                    exit={reduce ? { opacity: 0 } : { opacity: 0, x: dir * -60, filter: "blur(8px)" }}
+                    exit={{ opacity: 0, x: dir * -60, filter: "blur(8px)" }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                     className="cursor-grab touch-pan-y active:cursor-grabbing"
                   >

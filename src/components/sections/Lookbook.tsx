@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { RotateCw } from "lucide-react";
 import { CheckerSeam } from "@/components/ui/CheckerSeam";
 import { Photo } from "@/components/ui/Photo";
@@ -64,7 +64,6 @@ function Tile({ look, flipped, onFlip }: { look: Look; flipped: boolean; onFlip:
 export function Lookbook() {
   const [cat, setCat] = useState<Category | "all">("all");
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
-  const reduce = useReducedMotion();
   const shown = looks.filter((l) => cat === "all" || l.cats.includes(cat));
 
   return (
@@ -125,17 +124,17 @@ export function Lookbook() {
           </div>
 
           <motion.ul
-            layout={!reduce}
+            layout
             className="mt-8 grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-4 lg:grid-cols-4 lg:gap-x-5 lg:gap-y-10"
           >
             <AnimatePresence mode="popLayout" initial={false}>
               {shown.map((l) => (
                 <motion.li
                   key={l.id}
-                  layout={!reduce}
-                  initial={reduce ? false : { opacity: 0, y: 24, filter: "blur(6px)" }}
+                  layout
+                  initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.94, filter: "blur(6px)" }}
+                  exit={{ opacity: 0, scale: 0.94, filter: "blur(6px)" }}
                   transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                   className="min-w-0"
                 >

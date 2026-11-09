@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Accessibility, Baby, CircleParking, CreditCard, DoorOpen, Phone, Wifi } from "lucide-react";
 import { CheckerSeam } from "@/components/ui/CheckerSeam";
 import { Cta } from "@/components/ui/Cta";
@@ -26,14 +26,13 @@ const icons = {
 /** A stylized map: abstract streets (no invented landmarks), the shop's block in checker tiles, a star pin. */
 function StylizedMap() {
   const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
   const rx = useMotionValue(26);
   const rz = useMotionValue(-9);
   const srx = useSpring(rx, { stiffness: 120, damping: 18 });
   const srz = useSpring(rz, { stiffness: 120, damping: 18 });
 
   const onMove = (e: React.PointerEvent) => {
-    if (reduce || e.pointerType !== "mouse" || !ref.current) return;
+    if (e.pointerType !== "mouse" || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
     const nx = (e.clientX - r.left) / r.width - 0.5;
     const ny = (e.clientY - r.top) / r.height - 0.5;

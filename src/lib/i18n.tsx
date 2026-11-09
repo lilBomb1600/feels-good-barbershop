@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore, type ReactNode } from "react";
+import { MotionConfig } from "framer-motion";
 
 export type Lang = "en" | "es";
 export type Copy = { en: string; es: string };
@@ -35,9 +36,9 @@ export function useLang() {
   return { lang, setLang: useCallback((l: Lang) => setLang(l), []) };
 }
 
-/** Kept for layout symmetry; the store needs no provider. */
-export function LangProvider({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+/** App-wide client config: framer-motion follows the visitor's reduced-motion setting everywhere. */
+export function Providers({ children }: { children: ReactNode }) {
+  return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
 }
 
 /** Both languages in the markup; CSS shows the one html[data-lang] asks for, so there is no flash. */

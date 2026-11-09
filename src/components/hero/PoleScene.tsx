@@ -178,14 +178,14 @@ const floorFrag = /* glsl */ `
     base *= 0.93 + 0.1 * hash(floor(p * 95.0));
 
     float d = length(p);
-    float pool = exp(-pow(length(p - uLight) / 1.5, 2.0));
-    float lit = 0.1 + uLightK * pool + 0.42 * exp(-d * d / 4.0);
+    float pool = exp(-pow(length(p - uLight) / 1.7, 2.0));
+    float lit = 0.07 + uLightK * pool + 0.3 * exp(-d * d / 4.0);
     lit *= mix(0.3, 1.0, smoothstep(0.3, 1.3, d)); // contact shadow under the base
     vec3 col = base * lit;
 
     float fade = 1.0 - smoothstep(uRadius * 0.3, uRadius, d);
-    // dark tiles show more of the reflection, like the real floor
-    float alpha = fade * mix(0.74, 0.95, c);
+    // dark tiles show more of the reflection, like the real floor; the lamp lifts the fade where it lands
+    float alpha = min(1.0, fade + pool * 0.45) * mix(0.74, 0.95, c);
     gl_FragColor = vec4(col, alpha);
     #include <colorspace_fragment>
   }
@@ -201,7 +201,7 @@ function Floor({ light }: { light: React.RefObject<THREE.Vector3> }) {
         depthWrite: false,
         uniforms: {
           uLight: { value: new THREE.Vector2(0.8, 1.2) },
-          uLightK: { value: 1.25 },
+          uLightK: { value: 2.1 },
           uInk: { value: new THREE.Color("#0c0908") },
           uCream: { value: new THREE.Color("#ece2cf") },
           uRadius: { value: 5.2 },
@@ -344,7 +344,7 @@ function Rig({ onReady, still }: { onReady?: () => void; still: boolean }) {
       <ambientLight intensity={0.18} />
       <directionalLight position={[-3, 5, -4]} intensity={1.6} color="#cfd8ff" />
       <directionalLight position={[3, 6, 5]} intensity={0.55} color="#fff1e0" />
-      <pointLight ref={point} intensity={9} distance={9} decay={1.6} color="#ffe2c4" />
+      <pointLight ref={point} intensity={24} distance={10} decay={1.6} color="#ffe2c4" />
       <Pole m={m} />
       <Pole m={mm} mirror />
       <Floor light={lightPos} />

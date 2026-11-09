@@ -37,7 +37,7 @@ export function Hero() {
       <motion.div
         aria-hidden
         style={{ y: feelY }}
-        className="absolute inset-x-0 top-[calc(4.5rem+2svh)] flex justify-center lg:top-[11svh]"
+        className="absolute inset-x-0 top-[calc(4.5rem+2svh)] flex justify-center motion-reduce:transform-none! lg:top-[11svh]"
       >
         <span className="block font-display text-[min(56vw,40svh)] leading-[0.78] font-black tracking-[-0.015em] text-paper uppercase lg:text-[min(37vw,60svh)]">
           Feel
@@ -50,7 +50,7 @@ export function Hero() {
       <motion.div
         aria-hidden
         style={{ y: contentY }}
-        className="pointer-events-none absolute inset-x-0 top-[41svh] z-20 flex justify-center lg:top-[47svh]"
+        className="pointer-events-none absolute inset-x-0 top-[41svh] z-20 flex justify-center motion-reduce:transform-none! lg:top-[47svh]"
       >
         <span className="script-stroke block translate-x-[6%] -rotate-[7deg] font-script text-[min(30vw,15svh)] leading-none text-rose-lit drop-shadow-[0_12px_24px_rgb(0_0_0/0.55)] lg:translate-x-[22%] lg:text-[min(15vw,26svh)]">
           Goods
@@ -66,7 +66,7 @@ export function Hero() {
 
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="absolute inset-x-0 bottom-0 z-40 flex flex-col gap-5 px-5 pb-[4.75rem] sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:px-12 lg:pb-12"
+        className="absolute inset-x-0 bottom-0 z-40 flex flex-col gap-5 motion-reduce:transform-none! px-5 pb-[4.75rem] sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:px-12 lg:pb-12"
       >
         <div className="max-w-[26rem]">
           <p className="text-[0.98rem] leading-relaxed text-paper/90 text-pretty sm:text-lg">

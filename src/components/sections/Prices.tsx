@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform, useVelocity } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  useVelocity,
+} from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { CheckerSeam } from "@/components/ui/CheckerSeam";
 import { Photo } from "@/components/ui/Photo";
@@ -23,7 +31,10 @@ export function Prices() {
   const sx = useSpring(x, { stiffness: 260, damping: 28, mass: 0.6 });
   const sy = useSpring(y, { stiffness: 260, damping: 28, mass: 0.6 });
   const vx = useVelocity(sx);
-  const rotate = useTransform(vx, [-1600, 0, 1600], [-9, 0, 9], { clamp: true });
+  const reduce = useReducedMotion();
+  const lean = useTransform(vx, [-1600, 0, 1600], [-9, 0, 9], { clamp: true });
+  const still = useMotionValue(0);
+  const rotate = reduce ? still : lean;
 
   const last = useRef<{ x: number; y: number } | null>(null);
   const place = () => {
