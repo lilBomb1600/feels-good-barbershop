@@ -6,3 +6,6 @@ assets-inbox
 .qa
 .playwright-cli
 *.tsbuildinfo
+.vercel
+.env*
+!.env.example
