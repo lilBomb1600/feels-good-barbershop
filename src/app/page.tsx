@@ -4,6 +4,10 @@ import { Lookbook } from "@/components/sections/Lookbook";
 import { Prices } from "@/components/sections/Prices";
 import { Reviews } from "@/components/sections/Reviews";
 import { Visit } from "@/components/sections/Visit";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { HOME_DESCRIPTION, HOME_TITLE } from "@/lib/seo/pages";
+
+export const metadata = pageMetadata({ title: HOME_TITLE, description: HOME_DESCRIPTION, path: "/" });
 
 export default function Home() {
   return (

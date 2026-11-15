@@ -6,16 +6,16 @@ import { Footer } from "@/components/layout/Footer";
 import { CapeLoader } from "@/components/loader/CapeLoader";
 import { PreviewMark } from "@/components/ui/PreviewMark";
 import { Providers } from "@/lib/i18n";
+import { JsonLd } from "@/components/JsonLd";
+import { siteJsonLd } from "@/lib/seo/jsonld";
+import { rootMetadata } from "@/lib/seo/metadata";
+import { HOME_DESCRIPTION, HOME_TITLE } from "@/lib/seo/pages";
 
 const big = Big_Shoulders({ subsets: ["latin"], axes: ["opsz"], variable: "--font-big", display: "swap" });
 const dafoe = Mr_Dafoe({ subsets: ["latin"], weight: "400", variable: "--font-dafoe", display: "swap" });
 const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", display: "swap" });
 
-export const metadata: Metadata = {
-  title: "Feel Goods Barbershop | Pittsburg, CA",
-  description:
-    "Family barbershop in Pittsburg, CA since 2021. Fades, tapers, shaved designs and hot towel shaves with Johnny. 4.6 stars from 134 reviews on Booksy.",
-};
+export const metadata: Metadata = rootMetadata({ title: HOME_TITLE, description: HOME_DESCRIPTION });
 
 export const viewport: Viewport = {
   themeColor: "#0f0b0a",
@@ -65,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-svh">
+        <JsonLd data={siteJsonLd()} />
         <Providers>
           <CapeLoader />
           <Nav />
